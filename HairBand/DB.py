@@ -1,9 +1,18 @@
-import pymongo
-import configparser
 from abc import *
 
 
 class DataObject(ABCMeta):
+
+    def __init__(self, hash,
+                 data, time_stamp,
+                 status, amount, fee):
+
+        self.hash = hash
+        self.data = data
+        self.time_stamp = time_stamp
+        self.status = status
+        self.amount = amount
+        self.fee = fee
 
     @abstractmethod
     def info(self):
@@ -16,18 +25,42 @@ class DataObject(ABCMeta):
 
 class Transaction(DataObject):
 
-    def __next__(self, _hash, _data):
-        self.hash = _hash
-        self.data = _data
+    def __init__(self,  hash,
+                 data, time_stamp,
+                 status, amount, fee,
+                 step_limit, _from,
+                 _to, block_height):
+
+        super().__init__()
+        self.hash = hash
+        self.data = data
+        self.time_stamp = time_stamp
+        self.status = status
+        self.amount = amount
+        self.fee = fee
+        self.step_limit = step_limit
+        self._from = _from
+        self._to = _to
+        self.block_height = block_height
 
     def info(self):
         """
         return Transaction info
         :return:
         """
+        super().info()
+
         ret = {
-                "txHash": self.hash,
-                "data": self.data
+                "txHash":       self.hash,
+                "data":         self.data,
+                "time_stamp":   self.time_stamp,
+                "status":       self.status,
+                "amount":       self.amount,
+                "fee":          self.fee,
+                "step_limit":   self.step_limit,
+                "from":         self._from,
+                "to":           self._to,
+                "block_height": self.block_height
         }
 
         return ret
@@ -35,10 +68,22 @@ class Transaction(DataObject):
 
 class Block(DataObject):
 
-    def __next__(self, _hash, _time_stamp, _tx_list):
-        self.hash = _hash
-        self.time_stamp = _time_stamp
-        self.tx_list = _tx_list
+    def __init__(self,  hash,
+                 time_stamp, prev_hash,
+                 amount, fee,
+                 bp, block_size,
+                 txs, block_height):
+
+        super().__init__()
+        self.hash = hash
+        self.time_stamp = time_stamp
+        self.block_height = block_height
+        self.bp = bp
+        self.txs = txs
+        self.prev_hash = prev_hash
+        self.block_size = block_size
+        self.fee = fee
+        self.amount = amount
 
     @abstractmethod
     def transaction_list(self):
@@ -52,6 +97,3 @@ class Block(DataObject):
         """
         pass
 
-    @abstractmethod
-    def next_hash(self):
-        pass
