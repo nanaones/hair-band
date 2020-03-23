@@ -30,7 +30,6 @@ class Transaction(DataObject):
                  status, amount, fee,
                  step_limit, _from,
                  _to, block_height):
-
         super().__init__()
         self.hash = hash
         self.data = data
@@ -49,7 +48,6 @@ class Transaction(DataObject):
         :return:
         """
         super().info()
-
         ret = {
                 "txHash":       self.hash,
                 "data":         self.data,
@@ -62,7 +60,6 @@ class Transaction(DataObject):
                 "to":           self._to,
                 "block_height": self.block_height
         }
-
         return ret
 
 
@@ -85,15 +82,23 @@ class Block(DataObject):
         self.fee = fee
         self.amount = amount
 
-    @abstractmethod
-    def transaction_list(self):
-        pass
-
-    @abstractmethod
-    def priv_hash(self):
+    def info(self):
         """
-        get Priviouse Block hash
+        return Transaction info
         :return:
         """
-        pass
+        super().info()
+        ret = {
+                "txHash":       self.hash,
+                "time_stamp":   self.time_stamp,
+                "status":       self.status,
+                "amount":       self.amount,
+                "fee":          self.fee,
+                "block_size":    self.block_size,
+                "prev_hash":    self.prev_hash,
+                "txs":          self.txs,
+                "bp":           self.bp,
+                "block_height": self.block_height
+        }
+        return ret
 
